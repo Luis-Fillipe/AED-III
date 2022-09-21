@@ -251,17 +251,6 @@ public class app {
         return (result);
     }
 
-    public static void clean(String os) throws IOException {
-        System.out.println(os);
-        if (os.equals("Linux")) {
-            System.out.println("entrei");
-            Runtime.getRuntime().exec("clear");
-        }
-        else{
-            Runtime.getRuntime().exec("cls");
-        }
-    }
-
     public static void operations() throws Exception {
         String os = System.getProperty("os.name");
         //System.out.println(os);
@@ -273,6 +262,8 @@ public class app {
         System.out.println("2: Apagar conta");
         System.out.println("3: Editar conta");
         System.out.println("4: Realizar transferência entre conta");
+        System.out.println("5: Exibir um usuário");
+        System.out.println("6: Exibir todos os usuários");
         int choice = sc.nextInt();
 
         switch (choice) {
@@ -284,7 +275,6 @@ public class app {
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
                 if (choice == 1) {
-                    clean(os);
                     operations();
                 } else {
                     System.out.println("Até mais :)");
@@ -297,7 +287,6 @@ public class app {
                 choice = sc.nextInt();
                 if (choice == 1) {
                     operations();
-                    clean(os);
                 } else {
                     System.out.println("Até mais :)");
                 }
@@ -309,7 +298,6 @@ public class app {
                 choice = sc.nextInt();
                 if (choice == 1) {
                     operations();
-                    clean(os);
                 } else {
                     System.out.println("Até mais :)");
                 }
@@ -321,7 +309,30 @@ public class app {
                 choice = sc.nextInt();
                 if (choice == 1) {
                     operations();
-                    clean(os);
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+                case 5:
+                System.out.println("Digite o ID que deseja buscar: ")
+                int id = sc.next();
+                file.readUser(id);
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+                case 6:
+                arq.readUsers();
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
                 } else {
                     System.out.println("Até mais :)");
                 }

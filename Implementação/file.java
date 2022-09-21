@@ -119,7 +119,6 @@ public class file {
             flag = true;
             arq.readByte();
             arq.readInt();
-
             usuario user = new usuario();
             user.setID(arq.readInt());
             user.setNomeUsuario(arq.readUTF());
@@ -147,10 +146,47 @@ public class file {
         return (flag);
     }
 
+    public boolean readUsers() throws Exception {
+        boolean flag = false;
+        arq = new RandomAccessFile("bd/bd.db", "r");
+        arq.seek(4);
+        while ((arq.length() - arg.getFilePointer()) > 0) {
+            char lapide = arq.readByte();
+            if(lapide == ' '){
+                arq.readInt();
+                usuario user = new usuario();
+                user.setID(arq.readInt());
+                user.setNomeUsuario(arq.readUTF());
+                user.setNome(arq.readUTF());
+                int sizeEmails = arq.readByte();
+                for (int i = 0; i < sizeEmails; i++) {
+                    user.setEmail(arq.readUTF());
+                }
+                user.setSenha(arq.readUTF());
+                user.setCidade(arq.readUTF());
+                String cpf = "";
+                for (int i = 0; i < 11; i++) {
+                    cpf += (char) arq.readByte();
+                }
+                user.setCPF(cpf);
+                user.setTransferencias(arq.readInt());
+                user.setSaldo(arq.readInt());
+                user.printUser();
+            }
+        
+        else{
+            int size = arq.readInt()
+            arq.seek(arq.getFilePointer + size);
+        }
+    }
+        arq.close();
+        return (flag);
+    }
+
     public boolean transfer(int idTo, int idFrom, int valor) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
-        long pointerTo = getPointer(idTo) + 1;
+        long pointerTo = getPointePOuinr(idTo) + 1;
         long pointerFrom = getPointer(idFrom) + 1;
 
         if (pointerTo > 0 && pointerFrom > 0) {

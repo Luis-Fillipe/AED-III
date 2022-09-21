@@ -131,7 +131,7 @@ class usuario {
         System.out.println("ID: "+idConta);
         System.out.println("Nome: " + nome);
         System.out.println("Nome de usuário: " + nomeUsuario);
-        System.out.println("Senha: "+senha);
+        //System.out.println("Senha: "+senha);
         System.out.println("Cidade: " + cidade);
         System.out.println("Emails: " + email);
         System.out.println("CPF: " + cpf);
