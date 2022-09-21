@@ -269,7 +269,7 @@ public class app {
         switch (choice) {
             case 1:
                 user = create();
-                user.printUser();
+                //user.printUser();
                 file.insert(user);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
@@ -314,8 +314,8 @@ public class app {
                 }
                 break;
                 case 5:
-                System.out.println("Digite o ID que deseja buscar: ")
-                int id = sc.next();
+                System.out.println("Digite o ID que deseja buscar: ");
+                int id = sc.nextInt();
                 file.readUser(id);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
@@ -327,7 +327,7 @@ public class app {
                 }
                 break;
                 case 6:
-                arq.readUsers();
+                file.readUsers();
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();

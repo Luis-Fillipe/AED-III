@@ -6,17 +6,26 @@ public class file {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     DataOutputStream dos = new DataOutputStream(baos);
 
+    /*
+     * getID() - Função para verificar o ID presente no cabeçalho do arquivo e
+     * retornar o valor encontrado
+     * 
+     */
     public int getId() throws Exception {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         int id = -1;
         arq.seek(0);
         id = arq.readInt();
         id += 1;
-        updateLastId(id);
+
         arq.close();
         return (id);
     }
 
+    /*
+     * createFile() - Caso não tenhamos nosso arquivo criado, este método criamos o
+     * arquivo e setamos o cabeçalho como 0
+     */
     public void createFile() throws Exception {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         arq.seek(0);
@@ -24,6 +33,10 @@ public class file {
         arq.close();
     }
 
+    /*
+     * updateLastID - Recebe o ultimo ID inserido como parametro e atualiza o
+     * cabeçalho do arquivo
+     */
     public void updateLastId(int id) throws Exception {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         arq.seek(0);
@@ -31,6 +44,11 @@ public class file {
         arq.close();
     }
 
+    /*
+     * checkUsername - Verifica se o username que o usuário deseja colocar em seu
+     * cadastro ja existe na base de dados
+     * Return - False caso nao exista e true caso ja exista
+     */
     public boolean checkUsername(String username) throws Exception {
         boolean flag = true;
         arq = new RandomAccessFile("bd/bd.db", "r");
@@ -61,11 +79,15 @@ public class file {
         return (flag);
     }
 
+    /*
+     * deleteUSer() - Função para apagar um usuario recebendo seu ID como parametro
+     * return - False caso nao tenha apagado e true caso tenha apagado
+     */
     public boolean deleteUser(int id) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
         long pointer = getPointer(id);
-        System.out.println("Ponteiro: " + pointer);
+        // System.out.println("Ponteiro: " + pointer);
         if (pointer > 0) {
             arq.seek(pointer);
             flag = true;
@@ -76,6 +98,11 @@ public class file {
         return (flag);
     }
 
+    /*
+     * getPointer() - Função para encontrar a posição inicial de um registro na base
+     * de dados tendo como parametro o ID fornecido
+     * return - -1 caso nao tenha encontrado ou o ponteiro caso tenha encontrado
+     */
     public long getPointer(int id) throws Exception {
         boolean flag = false;
         long ponteiro = -1;
@@ -110,6 +137,12 @@ public class file {
         return (ponteiro);
     }
 
+    /*
+     * readUSer() - Função para trazer um usuario para memoria principal para
+     * exibi-lo na tela tendo recebido o ID como parametro
+     * return - False caso nao tenha sido encontrado e true caso tenha sido
+     * encontrado
+     */
     public boolean readUser(int id) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "r");
@@ -137,8 +170,7 @@ public class file {
             user.setTransferencias(arq.readInt());
             user.setSaldo(arq.readInt());
             user.printUser();
-        }
-        else{
+        } else {
             System.out.println("O ID informado é inválido :(");
         }
 
@@ -150,9 +182,9 @@ public class file {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "r");
         arq.seek(4);
-        while ((arq.length() - arg.getFilePointer()) > 0) {
-            char lapide = arq.readByte();
-            if(lapide == ' '){
+        while ((arq.length() - arq.getFilePointer()) > 0) {
+            char lapide = (char) arq.readByte();
+            if (lapide == ' ') {
                 arq.readInt();
                 usuario user = new usuario();
                 user.setID(arq.readInt());
@@ -173,12 +205,12 @@ public class file {
                 user.setSaldo(arq.readInt());
                 user.printUser();
             }
-        
-        else{
-            int size = arq.readInt()
-            arq.seek(arq.getFilePointer + size);
+
+            else {
+                int size = arq.readInt();
+                arq.seek(arq.getFilePointer() + size);
+            }
         }
-    }
         arq.close();
         return (flag);
     }
@@ -186,7 +218,7 @@ public class file {
     public boolean transfer(int idTo, int idFrom, int valor) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
-        long pointerTo = getPointePOuinr(idTo) + 1;
+        long pointerTo = getPointer(idTo) + 1;
         long pointerFrom = getPointer(idFrom) + 1;
 
         if (pointerTo > 0 && pointerFrom > 0) {
@@ -225,7 +257,7 @@ public class file {
 
             arq.seek(pointerTo);
 
-        }else{
+        } else {
             System.out.println("Um dos ID's informados é inválido :(");
         }
 
@@ -244,6 +276,8 @@ public class file {
             arq.writeByte(' ');
             arq.writeInt(b.length);
             arq.write(b);
+            updateLastId(user.getId());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -440,15 +474,15 @@ public class file {
             int x = 1;
             System.out.println("Escolha o email que deseja alterar");
             for (int i = 0; i < sizeEmails; i++) {
-                
-                    long breakpoint = arq.getFilePointer();
-                    String oldEmail = arq.readUTF();
-                    System.out.println(x+". "+oldEmail);
-                    x++;
-                }
-            
+
+                long breakpoint = arq.getFilePointer();
+                String oldEmail = arq.readUTF();
+                System.out.println(x + ". " + oldEmail);
+                x++;
+            }
+
             int choice = sc.nextInt();
-            while (choice <= 0 && choice > (sizeEmails+1)) {
+            while (choice <= 0 && choice > (sizeEmails + 1)) {
                 System.out.println("Opção Inválida!\nDigite novamente: ");
                 choice = sc.nextInt();
             }
@@ -462,6 +496,6 @@ public class file {
             flag = true;
         }
         arq.close();
-        return(flag);
+        return (flag);
     }
 }
