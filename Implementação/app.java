@@ -26,7 +26,7 @@ public class app {
                 flag = false;
             }
         } else if (choice == 4) { // verifico o nome da cidade
-            if (nome.matches("^[a-zA-Z]*$") == false) {
+            if (nome.matches("^[a-zA-Z ]*$") == false) {
                 flag = false;
             }
         } else if (choice == 5) { // verifico a senha
