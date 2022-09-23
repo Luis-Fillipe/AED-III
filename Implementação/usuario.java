@@ -139,5 +139,20 @@ class usuario {
         System.out.println("Saldo atual: " + saldoConta);
     }
 
-    
+    public usuario clone() {
+		usuario cloned = new usuario();
+
+		cloned.idConta = this.idConta;
+		cloned.nome = this.nome;
+		cloned.nomeUsuario = this.nomeUsuario;
+		cloned.senha = this.senha;
+		cloned.cidade = this.cidade;
+		cloned.email = this.email;
+		cloned.cpf = this.cpf;
+		cloned.transferencias = this.transferencias;
+		cloned.saldoConta = this.saldoConta;
+
+		return cloned;
+	}
+
 }

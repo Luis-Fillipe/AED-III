@@ -75,7 +75,7 @@ public class file {
             }
         }
 
-        arq.close();
+       
         return (flag);
     }
 
@@ -283,6 +283,23 @@ public class file {
         }
     }
 
+    public void edit(usuario user) throws Exception {
+        RandomAccessFile arq = new RandomAccessFile("bd/bd.db", "rw");
+        byte[] b;
+        int len;
+        try {
+            long size = arq.length();
+            arq.seek(size);
+            b = user.toByteArray();
+            arq.writeByte(' ');
+            arq.writeInt(b.length);
+            arq.write(b);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public usuario getObj(int id) throws Exception {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         long pointer = getPointer(id);
@@ -324,7 +341,7 @@ public class file {
                 arq.seek(pointer);
                 arq.writeByte('*');
                 user.setNome(newName);
-                insert(user);
+                edit(user);
 
             } else {
                 arq.seek(pointer + 9);
@@ -350,7 +367,7 @@ public class file {
                 arq.seek(pointer);
                 arq.writeByte('*');
                 user.setNomeUsuario(newName);
-                insert(user);
+                edit(user);
 
             } else {
                 arq.seek(pointer + 9);
@@ -386,7 +403,7 @@ public class file {
                 arq.seek(pointer);
                 arq.writeByte('*');
                 user.setSenha(newPassword);
-                insert(user);
+                edit(user);
             }
 
         }
@@ -419,7 +436,7 @@ public class file {
                 arq.seek(pointer);
                 arq.writeByte('*');
                 user.setCidade(newCity);
-                insert(user);
+                edit(user);
             }
 
         }
@@ -449,7 +466,7 @@ public class file {
                         arq.seek(pointer);
                         arq.writeByte('*');
                         user.setEmail(newEmail, i);
-                        insert(user);
+                        edit(user);
                     }
                 }
             }

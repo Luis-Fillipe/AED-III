@@ -179,7 +179,7 @@ public class app {
         boolean result = false;
         String newAtributo = "";
         System.out.println("Digite o ID que deseja editar: ");
-        int id = sc.nextInt();
+        int id = Integer.parseInt(sc.nextLine());
         if (id <= 0) {
             System.out.println("ID inválido, por favor digite novamente!");
         } else {
@@ -189,7 +189,7 @@ public class app {
             System.out.println("3: Editar Email");
             System.out.println("4: Editar Cidade");
             System.out.println("5: Editar Senha");
-            int choice = sc.nextInt();
+            int choice = Integer.parseInt(sc.nextLine());
             switch (choice) {
                 case 1:
                     System.out.println("Digite o novo nome: ");
@@ -253,9 +253,10 @@ public class app {
 
     public static void operations() throws Exception {
         String os = System.getProperty("os.name");
-        //System.out.println(os);
+        // System.out.println(os);
         usuario user = new usuario();
         file file = new file();
+        ordenacao ordenacao = new ordenacao();
         Scanner sc = new Scanner(System.in);
         System.out.println("Selecione uma operação:");
         System.out.println("1: Abrir conta");
@@ -264,12 +265,13 @@ public class app {
         System.out.println("4: Realizar transferência entre conta");
         System.out.println("5: Exibir um usuário");
         System.out.println("6: Exibir todos os usuários");
+        System.out.println("7: Intercalação balanceada");
         int choice = sc.nextInt();
 
         switch (choice) {
             case 1:
                 user = create();
-                //user.printUser();
+                // user.printUser();
                 file.insert(user);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
@@ -313,7 +315,7 @@ public class app {
                     System.out.println("Até mais :)");
                 }
                 break;
-                case 5:
+            case 5:
                 System.out.println("Digite o ID que deseja buscar: ");
                 int id = sc.nextInt();
                 file.readUser(id);
@@ -326,8 +328,19 @@ public class app {
                     System.out.println("Até mais :)");
                 }
                 break;
-                case 6:
+            case 6:
                 file.readUsers();
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+            case 7:
+                ordenacao.blocos();
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
