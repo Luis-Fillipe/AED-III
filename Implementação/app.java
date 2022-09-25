@@ -340,7 +340,23 @@ public class app {
                 }
                 break;
             case 7:
-                ordenacao.blocos();
+                int registros = 0;
+                int caminhos = 0;
+                System.out.println("Quantos caminhos você deseja?");
+                caminhos = sc.nextInt();
+                while (caminhos <= 0) {
+                    System.out.println("Valor inválido");
+                    System.out.println("Quantos caminhos você deseja?");
+                    caminhos = sc.nextInt();
+                }
+                System.out.println("Quantos registros em cada bloco você deseja?");
+                registros = sc.nextInt();
+                while (registros <= 0) {
+                    System.out.println("Valor inválido");
+                    System.out.println("Quantos registros em cada bloco você deseja?");
+                    registros = sc.nextInt();
+                }
+                ordenacao.blocos(registros, caminhos);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();

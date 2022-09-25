@@ -31,10 +31,17 @@ public class ordenacao {
      * balanceada() - Utilizaremos 3 registros e 2 caminhos para realizar a
      * intercalação balanceada
      */
-    public void blocos() throws Exception {
+    public void blocos(int registros, int caminhos) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("bd/bd.db", "r");
-        RandomAccessFile temp1 = new RandomAccessFile("bd/temp1.db", "rw");
-        RandomAccessFile temp2 = new RandomAccessFile("bd/temp2.db", "rw");
+        RandomAccessFile raf[] = new RandomAccessFile[caminhos];
+        String part1 = "bd/temp";
+        String part2 = ".db";
+        int qtdFile = 0;
+        for (int i = 0; i < raf.length; i++) {
+            raf[i] = new RandomAccessFile(part1 + i + part2, "rw");
+            qtdFile++;
+        }
+
         ArrayList<usuario> users = new ArrayList<usuario>();
         arq.seek(4);
         int qtd = 0;
@@ -67,77 +74,234 @@ public class ordenacao {
             }
         }
 
-        usuario usersArray[] = new usuario[3];
+        usuario usersArray[] = new usuario[registros];
         int j = 0;
         boolean flag = true;
+        int controle = 0;
         for (int i = 0; i < users.size(); i++) {
-            if (j == 3) {
+            if (j == registros) {
 
                 j = 0;
                 selecao(usersArray, usersArray.length);
-                if (flag == true) {
-                    flag = false;
-                    long size = temp1.length();
-                    temp1.seek(size);
-                    temp1.writeShort(3);
+                if (controle < caminhos) {
+                    raf[controle].seek(raf[controle].length());
+                    raf[controle].writeShort(registros);
                     for (int k = 0; k < usersArray.length; k++) {
-                        insert(usersArray[k], temp1);
+                        insert(usersArray[k], raf[controle]);
                     }
+                    controle++;
                 } else {
-                    flag = true;
-                    long size = temp2.length();
-                    temp2.seek(size);
-                    temp2.writeShort(3);
+                    controle = 0;
+                    raf[controle].seek(raf[controle].length());
+                    raf[controle].writeShort(registros);
                     for (int k = 0; k < usersArray.length; k++) {
-                        insert(usersArray[k], temp2);
+                        insert(usersArray[k], raf[controle]);
                     }
+                    controle++;
                 }
             }
             usersArray[j] = users.get(i).clone();
             j++;
         }
 
-        if (j <= 2) {
+        if (j <= registros) {
             selecao(usersArray, j);
-            if (flag == true) {
-                flag = false;
-                long size = temp1.length();
-                temp1.seek(size);
-                temp1.writeShort(j);
+            if (controle < caminhos) {
+                raf[controle].seek(raf[controle].length());
+                raf[controle].writeShort(j);
                 for (int k = 0; k < j; k++) {
-                    insert(usersArray[k], temp1);
+                    insert(usersArray[k], raf[controle]);
                 }
+                controle++;
             } else {
-                flag = true;
-                long size = temp2.length();
-                temp2.seek(size);
-                temp2.writeShort(j);
+                controle = 0;
+                raf[controle].seek(raf[controle].length());
+                raf[controle].writeShort(j);
                 for (int k = 0; k < j; k++) {
-                    insert(usersArray[k], temp2);
+                    insert(usersArray[k], raf[controle]);
                 }
+                controle++;
             }
         }
         int passadas = (int) (Math.log(qtd / 3) / Math.log(2)) + 1;
-        // balanceadaComum(passadas);
+        balanceadaComum(passadas, raf, registros, caminhos, 0, qtdFile);
     }
 
-    public void balanceadaComum(int passadas, int i, boolean flag, int qtd) throws Exception {
-        RandomAccessFile temp1 = new RandomAccessFile("bd/temp1.db", "rw");
-        RandomAccessFile temp2 = new RandomAccessFile("bd/temp2.db", "rw");
-        RandomAccessFile temp3 = new RandomAccessFile("bd/temp3.db", "rw");
-        RandomAccessFile temp4 = new RandomAccessFile("bd/temp4.db", "rw");
+    public void balanceadaComum(int passadas, RandomAccessFile tmpOld[], int registros, int caminhos, int passada,
+            int qtdFile)
+            throws Exception {
+        RandomAccessFile tmpNew[] = new RandomAccessFile[caminhos];
+        String part1 = "bd/temp";
+        String part2 = ".db";
+        
+        for (int i = 0; i < tmpNew.length; i++) {
+            tmpNew[i] = new RandomAccessFile(part1 + (qtdFile) + part2, "rw");
+            qtdFile++;
+        }
         ArrayList<usuario> users = new ArrayList<usuario>();
+        boolean flag = false;
+        boolean first = true;
         int j = 0;
-        if (flag == true) { // vou estar salvando os dados no temp3 e temp4
-            int qtdBlocos1 = quantidadeBlocos(temp1);
-            int qtdBlocos2 = quantidadeBlocos(temp2);
-            int indexBloco1 = 0;
-            int indexBloco2 = 0;
-            while () {
-                
-            }
-        } else{ // vou estar salvando os dados em temp1 e temp2
+        int k = j + 1;
+        int controle = 0;
+        boolean check = false;
+        tmpOld[j].seek(0);
+        tmpOld[k].seek(0);
+        boolean arq = false;
+        int size = 0;
+        int size2 = 0;
+        if (passada < passadas) {
 
+            size = tmpOld[j].readShort();
+            size2 = tmpOld[k].readShort();
+
+            //System.out.println("arq 1: " + size);
+            //System.out.println("arq 2 é aqui: " + size2);
+            while (flag == false) {
+                if (check == true) {
+                    check = false;
+                    size = tmpOld[j].readShort();
+                    size2 = tmpOld[k].readShort();
+
+                   // System.out.println("arq 1: " + size);
+                    //System.out.println("arq 2: " + size2);
+                }
+                if (first == false) {
+                    //System.out.println(tmpOld[j].getFilePointer());
+                    size = tmpOld[j].readShort();
+                    size2 = tmpOld[k].readShort();
+                }
+                if (arq == false) {
+                    tmpNew[j].writeShort(size + size2);
+                } else {
+                    tmpNew[k].writeShort(size + size2);
+                }
+
+                int controle1 = 0;
+                int controle2 = 0;
+                usuario user1 = new usuario();
+                usuario user2 = new usuario();
+                while ((controle1 + controle2) < (size + size2)) {
+                    if (controle1 == size && controle2 < size2) {
+                        if (user2.getId() == -1) {
+                            user2 = readUser(tmpOld[k].getFilePointer(), tmpOld[k], first);
+                        }
+
+                        first = false;
+                        if (arq == false) {
+                            insert(user2, tmpNew[j]);
+                            user2 = new usuario();
+                        } else {
+                            insert(user2, tmpNew[k]);
+                            user2 = new usuario();
+                        }
+
+                        controle2++;
+                    } else if (controle1 < size && controle2 == size2) {
+                        if (user1.getId() == -1) {
+                            user1 = readUser(tmpOld[j].getFilePointer(), tmpOld[j], first);
+                        }
+
+                        first = false;
+                        if (arq == false) {
+                            insert(user1, tmpNew[j]);
+                            user1 = new usuario();
+                        } else {
+                            insert(user1, tmpNew[k]);
+                            user1 = new usuario();
+                        }
+                        controle1++;
+                    } else if (controle1 < size && controle2 < size2) {
+                        if (user1.getId() == -1) {
+                            user1 = readUser(tmpOld[j].getFilePointer(), tmpOld[j], first);
+                        }
+                        if (user2.getId() == -1) {
+                            user2 = readUser(tmpOld[k].getFilePointer(), tmpOld[k], first);
+                        }
+                        first = false;
+                        if (user1.getId() < user2.getId()) {
+                            if (arq == false) {
+                                insert(user1, tmpNew[j]);
+                                controle1++;
+                                user1 = new usuario();
+                            } else {
+                                insert(user1, tmpNew[k]);
+                                controle1++;
+                                user1 = new usuario();
+                            }
+                        } else {
+                            if (arq == false) {
+                                insert(user2, tmpNew[j]);
+                                controle2++;
+                                user2 = new usuario();
+
+                            } else {
+                                insert(user2, tmpNew[k]);
+                                controle2++;
+                                user2 = new usuario();
+                            }
+
+                        }
+                        // controle += 2;
+                    }
+                }
+                //System.out.println("sai");
+                if (tmpOld[j].getFilePointer() < tmpOld[j].length()
+                        && tmpOld[k].getFilePointer() >= tmpOld[k].length()) {
+                    
+                    
+                    while (controle < size) {
+                        if (user1.getId() == -1) {
+                            System.out.println(tmpOld[j].getFilePointer());
+                            user1 = readUser(tmpOld[j].getFilePointer(), tmpOld[j], first);
+                        } else {
+                            insert(user1, tmpNew[j]);
+                            first = false;
+                            controle++;
+                        }
+                    }
+                } else if (tmpOld[j].getFilePointer() >= tmpOld[j].length()
+                        && tmpOld[k].getFilePointer() < tmpOld[k].length()) {
+                    size = tmpOld[k].readShort();
+                    tmpNew[k].writeShort(size);
+                    first = true;
+                    while (controle < size) {
+                        user1 = readUser(tmpOld[k].getFilePointer(), tmpOld[k], first);
+                        insert(user1, tmpNew[k]);
+                        first = false;
+                        controle++;
+                    }
+
+                }
+                if (tmpOld[j].getFilePointer() < tmpOld[j].length()
+                        && tmpOld[k].getFilePointer() < tmpOld[k].length()) {
+
+                    first = true;
+                    controle = 0;
+                    check = true;
+                    arq = !arq;
+                    //System.out.println("VOU PRO SEGUNDO ARQUIVO " + arq);
+
+                } else {
+
+                    first = true;
+
+                    //System.out.println("entrei2");
+                    flag = true;
+                    ++passada;
+                    qtdFile += 2;
+                    balanceadaComum(passadas, tmpNew, registros, caminhos, passada, qtdFile);
+
+                }
+
+            }
+        }else {
+            tmpOld[j].seek(0);
+            int sizeBlock = tmpOld[j].readShort();
+            for (int i = 0; i < sizeBlock; i++) {
+                usuario user = readUser(tmpOld[j].getFilePointer(), tmpOld[j], true);
+                user.printUser();
+            }
         }
 
     }
@@ -194,9 +358,11 @@ public class ordenacao {
 
     }
 
-    public usuario readUser(long pointer, RandomAccessFile arq) throws Exception {
+    public usuario readUser(long pointer, RandomAccessFile arq, boolean first) throws Exception {
         usuario user = new usuario();
+        // System.out.println(pointer);
         if (pointer >= 0) {
+
             arq.seek(pointer);
             arq.readByte();
             arq.readInt();
@@ -204,6 +370,7 @@ public class ordenacao {
             user.setID(arq.readInt());
             user.setNomeUsuario(arq.readUTF());
             user.setNome(arq.readUTF());
+            // System.out.println(user.getNome());
             int sizeEmails = arq.readByte();
             for (int i = 0; i < sizeEmails; i++) {
                 user.setEmail(arq.readUTF());
@@ -217,12 +384,13 @@ public class ordenacao {
             user.setCPF(cpf);
             user.setTransferencias(arq.readInt());
             user.setSaldo(arq.readInt());
-            user.printUser();
+
+            // user.printUser();
         } else {
             System.out.println("O ID informado é inválido :(");
         }
 
-        arq.close();
+        // arq.close();
         return (user);
     }
 }

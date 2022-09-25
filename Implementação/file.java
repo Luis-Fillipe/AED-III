@@ -75,7 +75,6 @@ public class file {
             }
         }
 
-       
         return (flag);
     }
 
@@ -178,6 +177,10 @@ public class file {
         return (flag);
     }
 
+    /*
+     * readUsers() - Função responsavel por ler todo o arquivo de dados buscando os
+     * registros válidos presentes no arquivo
+     */
     public boolean readUsers() throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "r");
@@ -215,6 +218,10 @@ public class file {
         return (flag);
     }
 
+    /*
+     * transfer() - Função responsável por fazer a transferencia entre 2 contas
+     * cadastradas no sistema
+     */
     public boolean transfer(int idTo, int idFrom, int valor) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
@@ -265,6 +272,9 @@ public class file {
         return (flag);
     }
 
+    /*
+     * inser() - Função responsável por inserir o obj user no nosso arquivo de dados
+     */
     public void insert(usuario user) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("bd/bd.db", "rw");
         byte[] b;
@@ -300,6 +310,11 @@ public class file {
         }
     }
 
+    /*
+     * getObj() - Esta função recebe o ID do usuario como parametro e busca no
+     * arquivo de dados sua ocorrencia, caso seja encontrado ela
+     */
+
     public usuario getObj(int id) throws Exception {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         long pointer = getPointer(id);
@@ -327,6 +342,9 @@ public class file {
         return (user);
     }
 
+    /*
+     * editName() - Função para editar o nome do id informado
+     */
     public boolean editName(String newName, int id) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
@@ -353,6 +371,10 @@ public class file {
         return (flag);
     }
 
+    /*
+     * editUsername() - FUnção na qual edita o nome de usuário do id informado
+     * testando se o username ja nao foi utilizado
+     */
     public boolean editUsername(String newName, int id) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
@@ -379,6 +401,9 @@ public class file {
         return (flag);
     }
 
+    /*
+     * editPassword() - Função para editar a senha mediante o id informado
+     */
     public boolean editPassword(String newPassword, int id) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
@@ -411,6 +436,10 @@ public class file {
         return (flag);
     }
 
+    /*
+     * editCity() - Função na qual recebe o novo nome da cidade e altera no arquivo
+     * de dados com o id informado
+     */
     public boolean editCity(String newCity, int id) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
@@ -444,6 +473,10 @@ public class file {
         return (flag);
     }
 
+    /*
+     * editEmail() - Função pela qual realmente fará a alteração no arquivo do email
+     * selecionado
+     */
     public boolean editEmail(String newEmail, int id, int idEmail) throws Exception {
         boolean flag = false;
         arq = new RandomAccessFile("bd/bd.db", "rw");
@@ -476,6 +509,10 @@ public class file {
         return (flag);
     }
 
+    /*
+     * choiceEmail() - Função com o objetivo de disponibilizar ao usuario o email
+     * que deseja editar
+     */
     public boolean choiceEmail(int id) throws Exception {
         Scanner sc = new Scanner(System.in);
         boolean flag = false;

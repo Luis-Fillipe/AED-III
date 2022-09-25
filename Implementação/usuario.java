@@ -100,6 +100,9 @@ class usuario {
     public int getId() {
         return (this.idConta);
     }
+    public String getNome() {
+        return (this.nome);
+    }
 
     public byte[] toByteArray() throws IOException {
         dos.writeInt(this.idConta);
