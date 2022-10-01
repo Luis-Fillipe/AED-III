@@ -1,10 +1,5 @@
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Properties;
 
-import javax.management.OperationsException;
 
 public class app {
     public static boolean checkInput(String nome, int choice) throws Exception {
@@ -339,24 +334,8 @@ public class app {
                     System.out.println("Até mais :)");
                 }
                 break;
-            case 7:
-                int registros = 0;
-                int caminhos = 0;
-                System.out.println("Quantos caminhos você deseja?");
-                caminhos = sc.nextInt();
-                while (caminhos <= 0) {
-                    System.out.println("Valor inválido");
-                    System.out.println("Quantos caminhos você deseja?");
-                    caminhos = sc.nextInt();
-                }
-                System.out.println("Quantos registros em cada bloco você deseja?");
-                registros = sc.nextInt();
-                while (registros <= 0) {
-                    System.out.println("Valor inválido");
-                    System.out.println("Quantos registros em cada bloco você deseja?");
-                    registros = sc.nextInt();
-                }
-                ordenacao.blocos(registros, caminhos);
+            case 7:              
+                ordenacao.blocos();
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
