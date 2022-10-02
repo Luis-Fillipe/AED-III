@@ -1,6 +1,5 @@
 import java.util.Scanner;
 
-
 public class app {
     public static boolean checkInput(String nome, int choice) throws Exception {
         file file = new file();
@@ -14,6 +13,7 @@ public class app {
                 }
                 i++;
             }
+
         } else if (choice == 2) { // verifico o nome de usuario
             flag = file.checkUsername(nome);
         } else if (choice == 3) { // verifico o cpf
@@ -254,13 +254,16 @@ public class app {
         ordenacao ordenacao = new ordenacao();
         Scanner sc = new Scanner(System.in);
         System.out.println("Selecione uma operação:");
-        System.out.println("1: Abrir conta");
-        System.out.println("2: Apagar conta");
-        System.out.println("3: Editar conta");
-        System.out.println("4: Realizar transferência entre conta");
-        System.out.println("5: Exibir um usuário");
-        System.out.println("6: Exibir todos os usuários");
-        System.out.println("7: Intercalação balanceada");
+        System.out.println("01: Abrir conta");
+        System.out.println("02: Apagar conta");
+        System.out.println("03: Editar conta");
+        System.out.println("04: Realizar transferência entre conta");
+        System.out.println("05: Exibir um usuário");
+        System.out.println("06: Exibir todos os usuários");
+        System.out.println("07: Intercalação balanceada");
+        System.out.println("08: Criar Árvore B+");
+        System.out.println("09: Criar Hash Estendido");
+        System.out.println("10: Criar Lista invertida");
         int choice = sc.nextInt();
 
         switch (choice) {
@@ -334,8 +337,41 @@ public class app {
                     System.out.println("Até mais :)");
                 }
                 break;
-            case 7:              
+            case 7:
                 ordenacao.blocos();
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+            case 8:
+                
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+            case 9:
+                
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+            case 10:
+                
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
