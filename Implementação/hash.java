@@ -1,4 +1,5 @@
 import java.io.RandomAccessFile;
+
 public class hash {
     RandomAccessFile destino;
     RandomAccessFile diretorio;
@@ -18,36 +19,37 @@ public class hash {
             profundidade = diretorio.readByte();
         }
         int posicao = formulaHash(id, profundidade);
-        long ponteiro = searchBucket(diretorio, posicao);
+        long bucket = searchBucket(diretorio, posicao);
         // inserção de fato
-        destino.seek(ponteiro);
-        if (ponteiro != -1) {
+        System.out.println(bucket);
+        destino.seek(bucket);
+        if (bucket != -1) {
 
             destino.skipBytes(1);
             long backupQtd = destino.getFilePointer();
             int qtd = destino.readByte();
+            System.out.println(qtd);
             if (qtd < 4) {
-                if (destino.length() == destino.getFilePointer()) {
-                    destino.writeInt(id);
-                    destino.writeLong(5);
-                    destino.seek(backupQtd);
-                    destino.writeByte(++qtd);
-                } else {
-                    boolean flag = false;
-                    while (flag == false) {
-                        if (destino.readInt() == 0) {
-                            destino.writeInt(id);
-                            destino.writeLong(5);
-                            destino.seek(backupQtd);
-                            destino.writeByte(++qtd);
-                            flag = true;
-                        } else {
-                            destino.skipBytes(8);
-                        }
-                    }
-                }
-            } else{
 
+                boolean flag = false;
+                while (flag == false) {
+                    if (destino.readInt() == 0) {
+                        destino.seek(destino.getFilePointer()-4);
+                        destino.writeInt(id);
+                        destino.writeLong(5);
+                        destino.seek(backupQtd);
+                        destino.writeByte(++qtd);
+                        flag = true;
+                    } else {
+                        destino.skipBytes(8);
+                    }
+
+                }
+            } else {
+                //vamos ter que aumentar a profundidade
+                if (profundidade == 1) {
+                    
+                }
             }
         }
     }
@@ -59,14 +61,25 @@ public class hash {
 
         destino.writeByte(1);
         destino.writeByte(0);
-        
+
         destino.seek(50);
-        destino.writeByte(5);
+        destino.writeByte(1);
         destino.writeByte(0);
-        
+
         destino.seek(104);
         destino.writeByte(2);
         destino.writeByte(0);
+    }
+
+    public void increaseProfundidade(RandomAccessFile diretorio,  RandomAccessFile destino, int profundidade) throws Exception {
+        profundidade++;
+        diretorio.seek(0);
+        diretorio.writeByte(profundidade);
+        long ponteiro = destino.length() - 2;
+        diretorio.writeLong(ponteiro);
+
+
+
     }
 
     public long searchBucket(RandomAccessFile diretorio, int posicao) throws Exception {
@@ -77,7 +90,7 @@ public class hash {
             int i = 0;
             while (i <= posicao) {
                 if (i == posicao) {
-                    bucket = diretorio.readLong();
+                    bucket = diretorio.readLong() - 1;
                 } else {
                     diretorio.skipBytes(8);
                 }
