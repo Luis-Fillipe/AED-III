@@ -248,7 +248,7 @@ public class app {
 
     public static void operations() throws Exception {
         String os = System.getProperty("os.name");
-        // System.out.println(os);
+        hash hash = new hash();
         usuario user = new usuario();
         file file = new file();
         ordenacao ordenacao = new ordenacao();
@@ -361,6 +361,7 @@ public class app {
                 break;
             case 9:
                 
+                hash.insert(1);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
