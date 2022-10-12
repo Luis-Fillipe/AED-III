@@ -116,7 +116,7 @@ public class app {
         return (user);
     }
 
-    public static boolean delete() throws Exception {
+    public static int delete() throws Exception {
         Scanner sc = new Scanner(System.in);
         usuario user = new usuario();
         file file = new file();
@@ -129,7 +129,7 @@ public class app {
         }
         result = file.deleteUser(id);
 
-        return (result);
+        return (id);
     }
 
     public static void transfer() throws Exception {
@@ -262,7 +262,7 @@ public class app {
         System.out.println("06: Exibir todos os usuários");
         System.out.println("07: Intercalação balanceada");
         System.out.println("08: Criar Árvore B+");
-        System.out.println("09: Criar Hash Estendido");
+        System.out.println("09: Exibir um usuário");
         System.out.println("10: Criar Lista invertida");
         int choice = sc.nextInt();
 
@@ -270,7 +270,9 @@ public class app {
             case 1:
                 user = create();
                 // user.printUser();
-                file.insert(user);
+                long ponteiro = file.insert(user);
+                
+                hash.insert(user.getId(), ponteiro);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
@@ -281,7 +283,8 @@ public class app {
                 }
                 break;
             case 2:
-                delete();
+                
+                hash.delete(delete());
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
@@ -360,19 +363,10 @@ public class app {
                 }
                 break;
             case 9:
-                
-                hash.insert(1);
-                System.out.println("Deseja realizar mais alguma operação?");
-                System.out.println("Digite 1 para SIM e 0 para NÃO");
-                choice = sc.nextInt();
-                if (choice == 1) {
-                    operations();
-                } else {
-                    System.out.println("Até mais :)");
-                }
-                break;
-            case 10:
-                
+                System.out.println("Digite o ID que deseja buscar: ");
+                id = sc.nextInt();
+                ponteiro = hash.search(id);
+                file.readUser(ponteiro);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();

@@ -275,14 +275,14 @@ public class file {
     /*
      * inser() - Função responsável por inserir o obj user no nosso arquivo de dados
      */
-    public void insert(usuario user) throws Exception {
+    public long insert(usuario user) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("bd/bd.db", "rw");
         byte[] b;
-        int len;
+        long ponteiro = -1;
         try {
-            long size = arq.length();
-            arq.seek(size);
+            arq.seek(arq.length());
             b = user.toByteArray();
+            ponteiro = arq.getFilePointer();
             arq.writeByte(' ');
             arq.writeInt(b.length);
             arq.write(b);
@@ -291,16 +291,18 @@ public class file {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return(ponteiro);
     }
 
     public void edit(usuario user) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("bd/bd.db", "rw");
         byte[] b;
-        int len;
+        hash hash = new hash();
         try {
             long size = arq.length();
             arq.seek(size);
             b = user.toByteArray();
+            hash.edit(user.getId(), arq.getFilePointer());
             arq.writeByte(' ');
             arq.writeInt(b.length);
             arq.write(b);
@@ -549,6 +551,40 @@ public class file {
             editEmail(newEmail, id, --choice);
             flag = true;
         }
+        arq.close();
+        return (flag);
+    }
+
+    public boolean readUser(long pointer) throws Exception {
+        boolean flag = false;
+        arq = new RandomAccessFile("bd/bd.db", "r");
+        if (pointer > 0) {
+            arq.seek(pointer);
+            flag = true;
+            arq.readByte();
+            arq.readInt();
+            usuario user = new usuario();
+            user.setID(arq.readInt());
+            user.setNomeUsuario(arq.readUTF());
+            user.setNome(arq.readUTF());
+            int sizeEmails = arq.readByte();
+            for (int i = 0; i < sizeEmails; i++) {
+                user.setEmail(arq.readUTF());
+            }
+            user.setSenha(arq.readUTF());
+            user.setCidade(arq.readUTF());
+            String cpf = "";
+            for (int i = 0; i < 11; i++) {
+                cpf += (char) arq.readByte();
+            }
+            user.setCPF(cpf);
+            user.setTransferencias(arq.readInt());
+            user.setSaldo(arq.readInt());
+            user.printUser();
+        } else {
+            System.out.println("O ID informado é inválido :(");
+        }
+
         arq.close();
         return (flag);
     }
