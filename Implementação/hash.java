@@ -14,6 +14,7 @@ public class hash {
         destino = new RandomAccessFile("bd/destino.db", "rw");
         diretorio = new RandomAccessFile("bd/diretorio.db", "rw");
         int profundidade = 1;
+        
         if (diretorio.length() == 0) {
             createFiles(diretorio, destino);
         } else {

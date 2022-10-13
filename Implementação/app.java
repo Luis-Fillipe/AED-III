@@ -251,6 +251,8 @@ public class app {
         hash hash = new hash();
         usuario user = new usuario();
         file file = new file();
+        no no = new no();
+        arvore arvore = new arvore();
         ordenacao ordenacao = new ordenacao();
         Scanner sc = new Scanner(System.in);
         System.out.println("Selecione uma operação:");
@@ -352,7 +354,7 @@ public class app {
                 }
                 break;
             case 8:
-                
+                arvore.insert(15, 15);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
