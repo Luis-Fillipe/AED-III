@@ -1,3 +1,4 @@
+import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 public class app {
@@ -273,7 +274,7 @@ public class app {
                 user = create();
                 // user.printUser();
                 long ponteiro = file.insert(user);
-                
+
                 hash.insert(user.getId(), ponteiro);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
@@ -285,7 +286,7 @@ public class app {
                 }
                 break;
             case 2:
-                
+
                 hash.delete(delete());
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
@@ -354,7 +355,8 @@ public class app {
                 }
                 break;
             case 8:
-                arvore.insert(15, 15);
+            RandomAccessFile arvoreR = new RandomAccessFile("bd/arvore.db", "rw");
+                arvore.insert(arvoreR, 7, 7, 0, false);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
