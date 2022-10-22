@@ -382,7 +382,7 @@ public class app {
                 break;
             case 10:
                 lista lista = new lista();
-                lista.inserir("Luis", 1);
+                lista.inserir("Luis", 2);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
