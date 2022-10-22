@@ -355,7 +355,7 @@ public class app {
                 }
                 break;
             case 8:
-            RandomAccessFile arvoreR = new RandomAccessFile("bd/arvore.db", "rw");
+                RandomAccessFile arvoreR = new RandomAccessFile("bd/arvore.db", "rw");
                 arvore.insert(arvoreR, 7, 7, 0, false);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
@@ -371,6 +371,18 @@ public class app {
                 id = sc.nextInt();
                 ponteiro = hash.search(id);
                 file.readUser(ponteiro);
+                System.out.println("Deseja realizar mais alguma operação?");
+                System.out.println("Digite 1 para SIM e 0 para NÃO");
+                choice = sc.nextInt();
+                if (choice == 1) {
+                    operations();
+                } else {
+                    System.out.println("Até mais :)");
+                }
+                break;
+            case 10:
+                lista lista = new lista();
+                lista.inserir("Luis", 1);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
