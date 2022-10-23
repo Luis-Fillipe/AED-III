@@ -1,4 +1,5 @@
 import java.io.*;
+import java.security.cert.LDAPCertStoreParameters;
 import java.util.Scanner;
 
 public class file {
@@ -92,7 +93,7 @@ public class file {
             flag = true;
             arq.writeByte('*');
         }
-
+        
         arq.close();
         return (flag);
     }
@@ -352,10 +353,13 @@ public class file {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         long pointer = getPointer(id);
         if (pointer > 0) {
+            lista listaNome = new lista();
             flag = true;
             arq.seek(pointer + 9); // (pointer + 8) me deixa na lapide
             arq.readUTF();
             String oldName = arq.readUTF();
+            listaNome.delete(oldName, id, false, "");
+            listaNome.inserir(newName, id, false, "");
             if (newName.length() > oldName.length() || newName.length() < oldName.length()) {
                 usuario user = getObj(id);
                 arq.seek(pointer);
@@ -447,6 +451,7 @@ public class file {
         arq = new RandomAccessFile("bd/bd.db", "rw");
         long pointer = getPointer(id);
         if (pointer > 0) {
+            lista listaCidade = new lista();
             flag = true;
             arq.seek(pointer + 9); // (pointer + 8) me deixa na lapide
             arq.readUTF();
@@ -458,7 +463,8 @@ public class file {
             arq.readUTF();
             long breakpoint = arq.getFilePointer();
             String oldCity = arq.readUTF();
-
+            listaCidade.deleteCidade(oldCity, id);
+            listaCidade.inserirCidade(newCity, id);
             if (newCity.length() == oldCity.length()) {
                 arq.seek(breakpoint);
                 arq.writeUTF(newCity);

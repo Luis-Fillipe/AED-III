@@ -72,7 +72,10 @@ public class arvore {
                         }
                         i++;
                     }
-                    insert(arvore, no2.ids[1], no2.adress[1], seek, true);
+                    for (int k = 1; k < 5; k++) {
+                        System.out.println(no.ids[k]);
+                    }
+                    //insert(arvore, no2.ids[1], no2.adress[1], seek, true);
 
                 }
 

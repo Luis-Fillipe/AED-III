@@ -158,4 +158,8 @@ class usuario {
 		return cloned;
 	}
 
+    public String getCidade() {
+        return cidade;
+    }
+
 }

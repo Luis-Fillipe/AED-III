@@ -1,4 +1,5 @@
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class app {
@@ -121,6 +122,7 @@ public class app {
         Scanner sc = new Scanner(System.in);
         usuario user = new usuario();
         file file = new file();
+        lista lista = new lista();
         boolean result = false;
         System.out.println("Digite o ID que deseja deletar: ");
         int id = sc.nextInt();
@@ -128,8 +130,11 @@ public class app {
             System.out.println("ID inválido, por favor digite novamente!");
             id = sc.nextInt();
         }
+        user = file.getObj(id);
         result = file.deleteUser(id);
-
+        if (result == true) {
+            lista.delete(user.getNome(), user.getId(), true, user.getCidade());
+        }
         return (id);
     }
 
@@ -255,6 +260,7 @@ public class app {
         no no = new no();
         arvore arvore = new arvore();
         ordenacao ordenacao = new ordenacao();
+        lista lista = new lista();
         Scanner sc = new Scanner(System.in);
         System.out.println("Selecione uma operação:");
         System.out.println("01: Abrir conta");
@@ -266,8 +272,8 @@ public class app {
         System.out.println("07: Intercalação balanceada");
         System.out.println("08: Criar Árvore B+");
         System.out.println("09: Exibir um usuário");
-        System.out.println("10: Criar Lista invertida");
-        int choice = sc.nextInt();
+        System.out.println("10: Pesquisar na Lista invertida");
+        int choice = Integer.parseInt(sc.nextLine());
 
         switch (choice) {
             case 1:
@@ -276,6 +282,7 @@ public class app {
                 long ponteiro = file.insert(user);
 
                 hash.insert(user.getId(), ponteiro);
+                lista.inserir(user.getNome(), user.getId(), true, user.getCidade());
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
@@ -288,6 +295,7 @@ public class app {
             case 2:
 
                 hash.delete(delete());
+
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
@@ -356,7 +364,7 @@ public class app {
                 break;
             case 8:
                 RandomAccessFile arvoreR = new RandomAccessFile("bd/arvore.db", "rw");
-                arvore.insert(arvoreR, 7, 7, 0, false);
+                arvore.insert(arvoreR, 3, 3, 0, false);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
@@ -381,8 +389,66 @@ public class app {
                 }
                 break;
             case 10:
-                lista lista = new lista();
-                lista.inserir("Luis", 2);
+                System.out.println("Escolha uma opção:");
+                System.out.println("01: Buscar por nome");
+                System.out.println("02: Buscar por cidade");
+                System.out.println("03: Buscar por nome e cidade");
+                choice = Integer.parseInt(sc.nextLine());
+                String entrada;
+                boolean check = false;
+                ArrayList<Integer> ids;
+                switch (choice) {
+                    case 1:
+                        System.out.println("Digite o nome a ser buscado: ");
+                        entrada = sc.nextLine();
+                        check = checkInput(entrada, 1);
+                        while (check == false) {
+                            System.out.println("O nome digitado não segue os padrões, por favor digite novamente!");
+                            entrada = sc.nextLine();
+                            check = checkInput(entrada, 1);
+                        }
+                        ids = lista.searchNome(entrada);
+                        System.out.println(ids);
+                        break;
+                    case 2:
+                        System.out.println("Digite o nome a ser buscado: ");
+                        entrada = sc.nextLine();
+                        check = checkInput(entrada, 1);
+                        while (check == false) {
+                            System.out.println("O nome digitado não segue os padrões, por favor digite novamente!");
+                            entrada = sc.nextLine();
+                            check = checkInput(entrada, 4);
+                        }
+                        ids = lista.searchCidade(entrada);
+                        System.out.println(ids);
+                        break;
+                    case 3:
+                        System.out.println("Digite o nome a ser buscado: ");
+                        entrada = sc.nextLine();
+                        check = checkInput(entrada, 1);
+                        while (check == false) {
+                            System.out.println("O nome digitado não segue os padrões, por favor digite novamente!");
+                            entrada = sc.nextLine();
+                            check = checkInput(entrada, 1);
+                        }
+                        ids = lista.searchNome(entrada);
+                        System.out.println("Digite o nome da cidade a ser buscado: ");
+                        entrada = sc.nextLine();
+                        check = checkInput(entrada, 1);
+                        while (check == false) {
+                            System.out.println("O nome digitado não segue os padrões, por favor digite novamente!");
+                            entrada = sc.nextLine();
+                            check = checkInput(entrada, 4);
+                        }
+                        ArrayList<Integer> ids2 = lista.searchCidade(entrada);
+                        ids.retainAll(ids2);
+                        System.out.println(ids);
+                        break;
+
+                    default:
+                        break;
+                }
+
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
