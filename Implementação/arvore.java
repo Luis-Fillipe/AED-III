@@ -4,23 +4,29 @@ import java.io.RandomAccessFile;
 public class arvore {
     RandomAccessFile arvore;
 
-    public long insert(RandomAccessFile arvore, int id, long endereco, long seek, boolean split)
+    public long insert(RandomAccessFile arvore, int id, long endereco, long seek, boolean split, boolean recursivo)
             throws IOException, Exception {
 
         long firstFolha = -1;
+        System.out.println("seek " + seek);
         if (arvore.length() == 0) { // aqui ainda não temos nada dentro do arq de arvore
             arvore.writeLong(8);
             createFile(arvore, id, endereco);
 
         } else { // aqui temos apenas uma folha no arquivo
-            arvore.seek(0);
-            firstFolha = arvore.readLong();
-            arvore.seek(firstFolha);
+            arvore.seek(seek);
+            if (recursivo == false) {
+                firstFolha = arvore.readLong();
+                arvore.seek(firstFolha);
+            }
+
             int qtd = arvore.readByte();
             boolean folha = arvore.readBoolean();
-
+            System.out.println(folha);
             if (folha == true) { // se for folha vamos inserir
+                System.out.println("QTD = " + qtd);
                 if (qtd < 4) {
+                    System.out.println("Entrei aqui");
                     no no = new no();
                     no.createFile();
                     no.quantidade = qtd;
@@ -44,12 +50,17 @@ public class arvore {
                     no.sort();
                     writeNo(arvore, no, 8);
                 } else { // nao cabe vou ter que dar split
+                    System.out.println("entrei erroneamente aqui");
                     no no = new no();
+                    no.createFile();
                     no no2 = new no();
+                    no2.createFile();
                     no noRaiz = new no();
+                    noRaiz.createFile();
                     boolean raiz = existsRaiz(arvore);
-                    if (raiz == true) { // vou subir um valor a raiz
+                    if (raiz == false) { // vou subir um valor a raiz
                         int i = 1;
+
                         while (i < 5) {
                             if (i < 3) {
                                 no.pointers[i] = arvore.readLong();
@@ -62,20 +73,60 @@ public class arvore {
                             }
                             i++;
                         }
-                        if (id > no2.ids[1]) {
-                            no2.ids[3] = id;
-                            no2.adress[3] = endereco;
-                            no2.sort();
-                        }else{
-                            no.ids[3] = id;
-                            no.adress[3] = endereco;
-                            no.sort();
-                        }
-                        //jogar o menor da direita para a raiz
+                        writeNo(arvore, no, firstFolha);
+
+                        no2.ids[3] = id;
+                        no2.adress[3] = endereco;
+                        no2.quantidade++;
+                        no2.sort();
+                        long backup = arvore.length();
+                        writeNo(arvore, no2, arvore.length());
+                        // jogar o menor da direita para a raiz
                         noRaiz = getRaiz(arvore);
-                        noRaiz.ids
+                        noRaiz.ids[noRaiz.quantidade] = no2.ids[1];
+                        noRaiz.adress[noRaiz.quantidade] = backup;
                     } else { // não existe raiz e vamos cria-la
 
+                        int i = 1;
+                        int j = 1;
+                        while (i < 5) {
+                            if (i < 3) {
+                                no.pointers[i] = arvore.readLong();
+                                no.ids[i] = arvore.readInt();
+                                no.adress[i] = arvore.readLong();
+                            } else {
+                                no2.pointers[j] = arvore.readLong();
+                                no2.ids[j] = arvore.readInt();
+                                no2.adress[j] = arvore.readLong();
+                                j++;
+                            }
+                            i++;
+                        }
+                        no.quantidade = 2;
+                        no2.ids[3] = id;
+                        no2.adress[3] = endereco;
+                        no2.quantidade++;
+                        System.out.println("ENTREI ONDE DEVERIA");
+
+                        for (j = 1; j < 5; j++) {
+                            System.out.println(no2.ids[j]);
+                        }
+
+                        // jogar o menor da direita para a raiz
+                        noRaiz.ids[1] = no2.ids[1];
+                        arvore.setLength(0);
+                        arvore.writeLong(8);
+                        noRaiz.quantidade = 1;
+                        noRaiz.folha = false;
+                        writeNoRaiz(arvore, noRaiz, arvore.length());
+                        long no1 = arvore.length();
+                        writeNo(arvore, no, no1);
+                        long no22 = arvore.length();
+                        writeNo(arvore, no2, no22);
+                        arvore.seek(10);
+                        arvore.writeLong(no1);
+                        arvore.seek(22);
+                        arvore.writeLong(no22);
                     }
 
                 }
@@ -83,29 +134,27 @@ public class arvore {
             } else { // não é folha, entao eu preciso procurar onde inserir
 
                 if (split == false) {
-                    no no = new no();
-                    int i = 1;
+                    int i = 0;
+                    System.out.println("qtd " + qtd);
                     while (i < qtd) {
-
-                        no.pointers[i] = arvore.readLong();
-                        no.ids[i] = arvore.readInt();
-                        no.adress[i] = arvore.readLong();
+                        long ponteiro = arvore.readLong();
+                        int idLido = arvore.readInt();
+                        long ponteiro2 = arvore.readLong();
                         i++;
-                    }
-                    no.quantidade = i;
-                    no.pointers[i] = arvore.readLong();
-                    i = 1;
-                    while (i < no.quantidade) {
-                        if (no.ids[i] < id) {
-                            seek = no.pointers[i];
-                            i = no.quantidade;
+                        System.out.println(idLido);
+                        if (id < idLido) {
+                            seek = ponteiro;
                         } else {
-
+                            if (i == qtd) {
+                                seek = ponteiro2;
+                            }
                         }
-                        i++;
+
                     }
-                    firstFolha = insert(arvore, id, endereco, seek, false);
-                    no.pointers[i] = firstFolha;
+                    System.out.println(seek);
+
+                    firstFolha = insert(arvore, id, endereco, seek, false, true);
+
                 } else {
                     no no = new no();
                     int i = 1;
@@ -135,6 +184,7 @@ public class arvore {
 
         }
         return (firstFolha);
+
     }
 
     public void createFile(RandomAccessFile arvore, int id, long endereco) throws Exception {
@@ -165,6 +215,17 @@ public class arvore {
         arvore.writeLong(no.pointers[5]);
     }
 
+    private void writeNoRaiz(RandomAccessFile arvore, no no, long seek) throws Exception {
+        arvore.seek(seek);
+        arvore.writeByte(no.quantidade);
+        arvore.writeBoolean(no.folha);
+        for (int i = 1; i < no.ids.length; i++) {
+            arvore.writeLong(no.pointers[i]);
+            arvore.writeInt(no.ids[i]);
+        }
+        arvore.writeLong(no.pointers[5]);
+    }
+
     private boolean existsRaiz(RandomAccessFile arvore) throws Exception {
         arvore.seek(0);
         long ponteiro = arvore.readLong();
@@ -182,7 +243,7 @@ public class arvore {
         no.quantidade = arvore.readByte();
         no.folha = arvore.readBoolean();
         int i = 1;
-        while (i < no.quantidade) {
+        while (i <= no.quantidade) {
             no.pointers[i] = arvore.readLong();
             no.ids[i] = arvore.readInt();
             i++;

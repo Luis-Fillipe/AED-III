@@ -364,7 +364,7 @@ public class app {
                 break;
             case 8:
                 RandomAccessFile arvoreR = new RandomAccessFile("bd/arvore.db", "rw");
-                arvore.insert(arvoreR, 3, 3, 0, false);
+                arvore.insert(arvoreR, 6, 1, 0, false, false);
                 System.out.println("Deseja realizar mais alguma operação?");
                 System.out.println("Digite 1 para SIM e 0 para NÃO");
                 choice = sc.nextInt();
